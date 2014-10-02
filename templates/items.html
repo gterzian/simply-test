@@ -1,0 +1,215 @@
+<template name='items'>
+  {{#if group}}
+  <h1>{{group.title}}</h1>
+  <p>{{group.description}}</p>
+  <p> {{all_user_tries group}} {{i18n "others have tried this test"}}</p>
+  {{#if total_tries group}}
+   <p>{{i18n "You tried this test"}}: {{total_tries group}} {{i18n "times"}}</p>
+   {{else}}
+   <p>{{i18n "You haven't tried this test yet" }}</p>
+   {{/if}}
+   
+   {{#if currentUser}}
+   {{else}}
+   <h2>{{i18n "Please login/register first"}} </h2>
+     {{/if}}
+
+  
+  
+  {{#if started group}}
+  <p>{{i18n "Correct answers"}}: {{current_try.points}} ({{percent_right}} {{i18n "of total answers"}})</p>
+  <p>{{i18n "Total questions"}}: {{total_questions}}</p>
+  <button type="button" id="{{group._id}}" class="stop btn btn-danger btn-xs ">{{i18n "Stop Test"}}</button>
+  {{else}}
+   {{#if started_another group}}
+     <p>{{i18n "Please stop your current test before starting a new one"}}</p>
+     <button type="button" id="{{group._id}}" disabled="disabled" class="start btn btn-primary btn-lg btn-block">{{i18n "Start Test"}}</button>
+     {{else}}
+       {{#if currentUser}}
+      <button type="button" id="{{group._id}}" class="start btn btn-primary btn-lg btn-block">{{i18n "Start Test"}}</button>
+       {{else}}
+       <p>{{i18n "Please Sign in first"}}</p>
+      {{/if}}
+    {{/if}}
+  {{/if}}
+  <div class="panel-group" id="accordion">
+    {{#if manager group}}
+     {{#if started group}}
+     {{else}}
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" id="add_item" href="#new_item">
+            <span class="glyphicon glyphicon-plus"></span> {{i18n "Add question"}}
+          </a>
+        </h4>
+      </div>
+      <div id="new_item" class="panel-collapse collapse">
+        <div class="panel-body">
+           <form class="form-horizontal" role="form">  
+             <div class="form-group">
+                <input type="text" class="form-control" id="item_title" placeholder="Question"> 
+              </div>    
+              
+               <div class="form-group">
+                 {{#if choices}}
+                 <div class="panel panel-default">
+                   <div class="panel-heading">
+                     <h3 class="panel-title">{{i18n "Answer choices"}}</h3>
+                   </div>
+                   <div class="panel-body">
+                     <ul class="list-group">
+                       {{#each choices }}
+                       <li class="list-group-item">{{this}}</li>
+                      {{/each}}
+                     </ul>
+                   </div>
+                 </div>
+                 {{/if}}
+                 
+                  <div class="input-group">
+                    <input type="text"  id='new_choice' class="form-control">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" id='add_choice' type="button"> <span class="glyphicon glyphicon-plus"></span> {{i18n "Add choice"}}</button>
+                    </span>
+                  </div><!-- /input-group -->
+                </div>  
+                
+                
+                 <div class="form-group">
+                   <label class="col-sm-2 control-label">{{i18n "Correct answer"}}</label>
+                   <select class="form-control" id='answer'>
+                     {{#each choices}}
+                     <option>{{this}}</option>
+                    {{/each}}
+                   </select>
+                  </div>
+             <div class="form-group">
+            <button  id='add_item' class="btn btn-default">{{i18n "Create Question"}}</button>
+          </div>
+           </form>
+        </div>
+      </div>
+      {{#each items}}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" class='answer_question' data-parent="#accordion" href="#{{_id}}">
+              {{title}} 
+            </a>
+          </h4>
+        </div>
+        <div id="{{_id}}" class="panel-collapse collapse ">
+          <div class="panel-body">
+                     <ul class="list-group">
+                      {{#each this.choices}}
+                       <li class="list-group-item">{{this}}</li>
+                      {{/each}}
+                     </ul>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+     {{/if}}
+    {{/if}}
+    
+    {{#if started group}}
+    {{#each items}}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" class='answer_question' data-parent="#accordion" href="#{{_id}}">
+            {{title}}  
+                {{#if answered this}}
+                   {{#if answered_correctly this}} 
+                         <strong>{{i18n "Well done"}} :)</strong>
+                         {{else}}
+                           <strong> {{i18n "Wrong answer"}} :(</strong>
+                         {{/if}}
+                  {{/if}}
+                            
+          </a>
+        </h4>
+      </div>
+      <div id="{{_id}}" class="panel-collapse collapse ">
+        
+        <div class="panel-body">
+          
+          {{#if answered this }}
+           {{#if answered_correctly this}}
+            <p>{{i18n "Your answer"}}:{{answer_for this}}  </p>
+            <p>{{i18n "Well done"}}!</p>
+            {{else}}
+            <p>{{i18n "Your answer"}}:{{answer_for this}} </p>
+            <p>{{i18n "Sorry wrong answer, this is the correct answer"}}: {{this.answer}}</p>
+          {{/if}}
+            <!--button type="button" id="{{_id}}" class="undo_answer btn btn-danger btn-xs ">Undo answer</button-->
+           {{else}}
+                 <div class="form-group">
+                   <ul class="list-group">
+                    {{#each this.choices}}
+                     <li class="list-group-item">{{this}}</li>
+                    {{/each}}
+                   </ul>
+               <label>{{i18n "Choose an answer"}}</label>
+                   <select class="form-control chosen" id='chosen{{_id}}'>
+                    
+                     {{#each this.choices}}
+                     <option>{{this}}</option>
+                     
+                    {{/each}}
+                   </select>
+                      
+                  </div>
+                <div class="form-group">
+            <button id='{{_id}}' class="btn btn-default choose_answer">{{i18n "Choose"}}</button>
+          </div>
+          {{/if}}
+        </div>
+        
+      </div>
+    </div>
+    {{/each}}
+    
+    {{else}}
+    
+    {{#each items}}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" class='answer_question' data-parent="#accordion" href="#{{_id}}">
+            {{title}}  
+                            
+          </a>
+        </h4>
+      </div>
+      <div id="{{_id}}" class="panel-collapse collapse ">
+        
+        <div class="panel-body">
+  
+                 <div class="form-group">
+                   <ul class="list-group">
+                    {{#each this.choices}}
+                     <li class="list-group-item">{{this}}</li>
+                    {{/each}}
+                   </ul>
+                   {{> conversations}}
+   
+        </div>
+        
+      </div>
+    </div>
+  </div>
+    {{/each}}
+    
+    {{/if}}
+    
+  </div>
+  
+  {{else}}
+  <p>{{i18n "Please choose a Test"}}</p>
+  {{/if}}
+  
+
+</template>
