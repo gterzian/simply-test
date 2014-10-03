@@ -11,4 +11,7 @@ Meteor.startup ->
   
   Meteor.publish "Tries", ->
     tries.find()
+  
+  Meteor.publish "Chats", ->
+    chats.find()
     

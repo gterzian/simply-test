@@ -17,7 +17,6 @@ Template.groups.events
         description: t.find("#description").value
         title: t.find("#title").value
         managers:  [Meteor.userId()]
-        time: Number(t.find("#time").value)
       t.find("#title").value = ''
       t.find("#description").value = ''
       $('#new_listing').click()

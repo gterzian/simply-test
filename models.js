@@ -41,3 +41,17 @@ tries.allow({
   },
   fetch: ['userId']
 })
+
+chats = new Meteor.Collection('Chats')
+chats.allow({
+  insert: function (userId, doc) {
+    return (userId && doc.sender == userId);
+  },
+  update: function (userId, doc, fields, modifier) {
+    return (userId && doc.sender == userId);
+  },
+  remove: function (userId, doc) {
+    return (userId && doc.sender == userId);
+  },
+  fetch: ['sender']
+})

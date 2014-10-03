@@ -46,7 +46,11 @@ Template.items.total_tries = (group) ->
 Template.items.all_user_tries = (group) ->
   tries.find(group:group._id, userId:{$not:Meteor.userId()}).count()
 
-
+Template.items.get_sender = (chat) ->
+  Meteor.users.findOne(_id:chat.sender).username
+    
+Template.items.chats = (question_id) ->
+  chats.find(question:question_id)
       
 answer_for = (question) ->
   if Session.get('current_try')
@@ -122,3 +126,14 @@ Template.items.events =
         answers:
           answer
     )
+    
+  'click .send_chat': (e, t) ->
+    question_id = e.target.id.split('_')[1]
+    e.preventDefault()
+    if content = t.find("#content_#{question_id}").value
+      chats.insert
+        sender: Meteor.userId()  
+        content: content
+        time: new Date().getTime()
+        question: question_id
+      t.find("#content_#{question_id}").value = ''

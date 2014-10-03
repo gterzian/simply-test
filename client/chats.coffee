@@ -10,27 +10,21 @@ Template.conversations.new_chat = (id) ->
   not _.contains(conversations.findOne(id).watched, Meteor.userId())
 
 Template.conversations.get_user = (chat) ->
-  if chat.sender is Meteor.userId()
-    'you'
-  else
-    'the other'
-
+  Meteor.users.findOne(_id:chat.sender).username
+    
+Template.conversations.chats = ->
+  chats.find(conversation:Session.get('group'))
   
 Template.conversations.events
   'click #send_chat': (e, t) ->
     e.preventDefault()
     if t.find("#content").value
-      conversations.update(
-        Session.get('chatting'),
-        $set:
-          watched: [Meteor.userId()]
-        $addToSet: 
-          chats:
-            sender: Meteor.userId()  
-            content: t.find("#content").value
-            time: new Date().getTime()
-            conversation: Session.get('chatting')
-      )
+      console.log(Session.get('group'))
+      chats.update
+        sender: Meteor.userId()  
+        content: t.find("#content").value
+        time: new Date().getTime()
+        conversation: Session.get('group')
       t.find("#content").value = ''
     
   'click .accordion': (e, t) ->

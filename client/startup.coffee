@@ -3,6 +3,7 @@ Meteor.startup ->
   Meteor.subscribe("Groups", -> Session.set('ready', true))
   Meteor.subscribe('Items')
   Meteor.subscribe('Tries')
+  Meteor.subscribe('Chats')
   
   Accounts.ui.config
     passwordSignupFields: 'USERNAME_AND_EMAIL'

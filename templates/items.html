@@ -90,26 +90,7 @@
            </form>
         </div>
       </div>
-      {{#each items}}
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a data-toggle="collapse" class='answer_question' data-parent="#accordion" href="#{{_id}}">
-              {{title}} 
-            </a>
-          </h4>
-        </div>
-        <div id="{{_id}}" class="panel-collapse collapse ">
-          <div class="panel-body">
-                     <ul class="list-group">
-                      {{#each this.choices}}
-                       <li class="list-group-item">{{this}}</li>
-                      {{/each}}
-                     </ul>
-          </div>
-        </div>
-      </div>
-      {{/each}}
+     
     </div>
      {{/if}}
     {{/if}}
@@ -194,7 +175,40 @@
                      <li class="list-group-item">{{this}}</li>
                     {{/each}}
                    </ul>
-                   {{> conversations}}
+                   <div class="panel panel-info">
+                     <div class="panel-heading">
+                       <h3 class="panel-title">{{i18n "Discuss"}} </h3>
+                     </div>
+                     <div class="panel-body">
+                             <div class="table-responsive">
+                               <table class="table table-condensed table-bordered">
+                                   <thead>
+                                  <tr>
+                                     <th>who</th>
+                                     <th>content</th>
+                                   </tr>
+                                 </thead>
+                                 <tbody>
+                                  {{#each chats this._id}}
+                                  <tr>
+                                    <th>{{get_sender this}}</th>
+                                    <th>{{content}}</th>
+                                  </tr>
+                                  {{/each}}  
+                                  </tbody>
+                               </table>
+                           </div>
+     
+                            <form class="form-inline" role="form">         
+                             <div class="form-group">
+                                <input type="text" class="form-control" id="content_{{this._id}}" placeholder="type something..."> 
+                              </div>
+                             <button role='submit'  id='send_{{this._id}}' class="btn send_chat btn-default">Send</button>
+                            </form>
+         
+
+                     </div>
+                   </div>
    
         </div>
         
