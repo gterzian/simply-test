@@ -1,16 +1,21 @@
+Template.welcome.loading = ->
+  Session.get('loading')
+
 Template.welcome.rendered = -> 
+  Session.set('loading', 0)
   $('#loadingModal').modal('show')
-  Meteor.setInterval(
+  interval = Meteor.setInterval(
     -> 
-      current = Number($('#loader').css('width').split('%')[0])
-      $('#loader').css('width', "#{current + 5}%")
-    100
+      Session.set('loading', Session.get('loading') + 10)
+    600
   )
   
   Tracker.autorun (c) ->
     if Session.get('ready')
       $('#loadingModal').modal('hide')
+      Meteor.clearInterval(interval)
       c.stop()
+      
   
 
 Template.welcome.current_lang = (lang) ->

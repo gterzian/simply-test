@@ -47,10 +47,16 @@ Template.items.all_user_tries = (group) ->
   tries.find(group:group._id, userId:{$not:Meteor.userId()}).count()
 
 Template.items.get_sender = (chat) ->
-  Meteor.users.findOne(_id:chat.sender).username
+  chat.username
     
 Template.items.chats = (question_id) ->
   chats.find(question:question_id)
+
+Template.items.new_match = (category) ->
+  if Meteor.userId()
+    true if matches.findOne(userId:Meteor.userId(), category:category, watched:false)
+  else
+    true if chats.find(question:category).count()
       
 answer_for = (question) ->
   if Session.get('current_try')
@@ -132,8 +138,17 @@ Template.items.events =
     e.preventDefault()
     if content = t.find("#content_#{question_id}").value
       chats.insert
-        sender: Meteor.userId()  
+        sender: Meteor.userId() 
+        username: Meteor.user().username 
         content: content
         time: new Date().getTime()
         question: question_id
       t.find("#content_#{question_id}").value = ''
+  
+  'click .view_question': (e,t) ->
+    target = e.target.hash[1...]
+    match = matches.find(category:target, userId:Meteor.userId(), watched:false)
+    match.forEach (match) ->
+      matches.update(match._id, 
+        $set:
+          watched:true)

@@ -4,14 +4,28 @@ Meteor.startup ->
   Meteor.subscribe('Items')
   Meteor.subscribe('Tries')
   Meteor.subscribe('Chats')
+  Meteor.subscribe('Matches')
+  Meteor.subscribe('Users')
   
   Accounts.ui.config
     passwordSignupFields: 'USERNAME_AND_EMAIL'
-  
+
+  do -> 
+    query = chats.find()
+    handle = query.observeChanges
+      added: (id, chat) ->
+        unless matches.findOne(category:chat.question, userId:Meteor.userId(), watched:false)
+          unless Meteor.userId() is chat.sender
+            matches.insert
+              userId: Meteor.userId()
+              category: chat.question
+              watched: false    
+
   
   i18n.map 'cn', 
     Hello: '你好'
     "Discuss": "讨论"
+    "New message": "新短信"
     "Welcome, Test your English here!": "你好，测试你的英语水平"
     "Create a test": "创建测试"
     "Create": "创建"
@@ -42,6 +56,7 @@ Meteor.startup ->
   i18n.map 'en', 
     Hello: 'Hello'
     "Discuss": "Discuss"
+    "New message": "New message"
     "Welcome, Test your English here!": "Welcome, Test your English here!"
     "Create a test": "Create a Test"
     "Create": "Create"

@@ -55,3 +55,17 @@ chats.allow({
   },
   fetch: ['sender']
 })
+
+matches = new Meteor.Collection('Matches')
+matches.allow({
+  insert: function (userId, doc) {
+    return (userId && doc.userId == userId);
+  },
+  update: function (userId, doc, fields, modifier) {
+    return (userId && doc.userId == userId);
+  },
+  remove: function (userId, doc) {
+    return (userId && doc.userId == userId);
+  },
+  fetch: ['userId']
+})

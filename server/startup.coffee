@@ -14,4 +14,10 @@ Meteor.startup ->
   
   Meteor.publish "Chats", ->
     chats.find()
+  
+  Meteor.publish "Matches", ->
+    matches.find()
+  
+  Meteor.publish "Users", ->
+    Meteor.users.find()
     

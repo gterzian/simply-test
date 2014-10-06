@@ -159,8 +159,10 @@
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title">
-          <a data-toggle="collapse" class='answer_question' data-parent="#accordion" href="#{{_id}}">
-            {{title}}  
+          <a data-toggle="collapse" class='view_question' data-parent="#accordion" href="#{{_id}}">
+            {{title}} | {{i18n "Discuss"}} {{#if new_match this._id}}
+                  <span class="label label-warning">{{i18n "New message"}}</span>
+                 {{/if}}
                             
           </a>
         </h4>
@@ -199,11 +201,15 @@
                                </table>
                            </div>
      
-                            <form class="form-inline" role="form">         
+                            <form class="form-inline" role="form">  
+                              {{#if currentUser}}       
                              <div class="form-group">
                                 <input type="text" class="form-control" id="content_{{this._id}}" placeholder="type something..."> 
                               </div>
                              <button role='submit'  id='send_{{this._id}}' class="btn send_chat btn-default">Send</button>
+                             {{else}}
+                             <h2>{{i18n "Please login/register first"}} </h2>
+                             {{/if}}
                             </form>
          
 
